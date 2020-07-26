@@ -1,10 +1,15 @@
 import gulp from 'gulp';
 import del from 'del';
+import browserSync from 'browser-sync';
 import imagemin from 'gulp-imagemin';
 import webp from 'gulp-webp';
 import cache from 'gulp-cache';
 import imgCompress from 'imagemin-jpeg-recompress';
 import jsonServer from "gulp-json-srv";
+import plumber from 'gulp-plumber';
+import pug from 'gulp-pug';
+import pugbem from 'gulp-pugbem';
+import cached from 'gulp-cached';
 
 
 // Clean build folder =====================================================
@@ -74,6 +79,30 @@ export const jserv = () => {
         .pipe(jserver.pipe());
 };
 
+// BrowserSync =====================================================
+browserSync.create();
+export const serve = () => {
+    browserSync.init({
+        server: './build'
+    });
+};
+
+// Pug task =====================================================
+pugbem.b = true;
+export const makePug = () => {
+        return gulp.src('./src/pug/*.pug')
+            .pipe(plumber())
+            .pipe(pug({
+                pretty: true,
+                plugins: [pugbem]
+            }))
+            .pipe(plumber.stop())
+            .pipe(cached('pug'))
+            .pipe(gulp.dest('./build/'))
+            .on('end', browserSync.reload);
+    }
+;
+
 // Dev task =====================================================
 export const dev = gulp.series(
     clean,
@@ -81,8 +110,7 @@ export const dev = gulp.series(
         img,
         fonts,
         inc,
-
-
+        makePug
     )
 )
 
