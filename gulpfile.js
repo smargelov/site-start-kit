@@ -5,6 +5,10 @@ import imagemin from 'gulp-imagemin';
 import webp from 'gulp-webp';
 import newer from 'gulp-newer';
 import imgCompress from 'imagemin-jpeg-recompress';
+import svgSprite from 'gulp-svg-sprite';
+import svgmin from 'gulp-svgmin';
+import cheerio from 'gulp-cheerio';
+import replace from 'gulp-replace';
 import jsonServer from "gulp-json-srv";
 import plumber from 'gulp-plumber';
 import pug from 'gulp-pug';
@@ -68,6 +72,41 @@ export const img = gulp.series(
     imgOptimization,
     imgMove
 );
+
+// SVG Sprite =====================================================
+const svgPath = {
+    "input": "./src/static/images/svg/*.svg",
+    "output": "./build/images/svg/"
+};
+
+export const svgSpriter = () => {
+    return gulp.src(svgPath.input)
+        .pipe(svgmin({
+            js2svg: {
+                pretty: true
+            }
+        }))
+        .pipe(cheerio({
+            run: function ($) {
+                // $('[fill]').removeAttr('fill');
+                // $('[stroke]').removeAttr('stroke');
+                // $('[style]').removeAttr('style');
+            },
+            parserOptions: {
+                xmlMode: true
+            }
+        }))
+        .pipe(replace('&gt;', '>'))
+        .pipe(svgSprite({
+            mode: {
+                symbol: {
+                    sprite: "sprite.svg"
+                }
+            }
+        }))
+        .pipe(gulp.dest(svgPath.output));
+};
+
 
 // Inc =====================================================
 export const inc = () => {
