@@ -10,10 +10,17 @@ import svgmin from 'gulp-svgmin';
 import cheerio from 'gulp-cheerio';
 import replace from 'gulp-replace';
 import jsonServer from "gulp-json-srv";
-import plumber from 'gulp-plumber';
 import pug from 'gulp-pug';
 import pugbem from 'gulp-pugbem';
 import cached from 'gulp-cached';
+import plumber from 'gulp-plumber';
+import sass from 'gulp-sass';
+import autoprefixer from 'gulp-autoprefixer';
+import csso from 'gulp-csso';
+import csscomb from 'gulp-csscomb';
+import sourcemaps from 'gulp-sourcemaps';
+import rename from 'gulp-rename';
+import mmq from 'gulp-merge-media-queries';
 
 
 // Clean build folder =====================================================
@@ -107,6 +114,53 @@ export const svgSpriter = () => {
         .pipe(gulp.dest(svgPath.output));
 };
 
+// Styles =====================================================
+const stylesPATH = {
+    "input": "./src/static/styles/",
+    "output": "./build/css/"
+};
+export const stylesDev = () => {
+    return gulp.src(stylesPATH.input + 'styles.sass')
+        .pipe(plumber())
+        .pipe(sourcemaps.init())
+        .pipe(sass())
+        .pipe(autoprefixer({
+            overrideBrowserslist: ['last 3 versions']
+        }))
+        .pipe(sourcemaps.write())
+        .pipe(rename('styles.min.css'))
+        .pipe(gulp.dest(stylesPATH.output))
+        .on('end', browserSync.reload);
+};
+export const stylesBuild = () => {
+    return gulp.src(stylesPATH.input + 'styles.sass')
+        .pipe(sass())
+        .pipe(autoprefixer({
+            overrideBrowserslist: ['last 3 versions']
+        }))
+        .pipe(autoprefixer())
+        .pipe(mmq())
+        .pipe(csscomb())
+        .pipe(rename('styles.min.css'))
+        .pipe(gulp.dest(stylesPATH.output))
+};
+export const stylesBuildMin = () => {
+    return gulp.src(stylesPATH.input + 'styles.sass')
+        .pipe(sass())
+        .pipe(autoprefixer())
+        .pipe(mmq())
+        .pipe(csscomb())
+        .pipe(csso())
+        .pipe(rename('styles.min.css'))
+        .pipe(gulp.dest(stylesPATH.output))
+};
+export const stylesLib = () => {
+    return gulp.src(stylesPATH.input + 'libs.sass')
+        .pipe(sass())
+        .pipe(csso())
+        .pipe(rename('libs.min.css'))
+        .pipe(gulp.dest(stylesPATH.output))
+};
 
 // Inc =====================================================
 export const inc = () => {
