@@ -12,6 +12,7 @@ import replace from 'gulp-replace';
 import jsonServer from "gulp-json-srv";
 import pug from 'gulp-pug';
 import pugbem from 'gulp-pugbem';
+import fs from 'fs';
 import cached from 'gulp-cached';
 import plumber from 'gulp-plumber';
 import sass from 'gulp-sass';
@@ -174,7 +175,7 @@ const jserver = jsonServer.create({
 });
 
 export const jserv = () => {
-    return gulp.src('data.json')
+    return gulp.src('./data/data.json')
         .pipe(jserver.pipe());
 };
 
@@ -192,6 +193,10 @@ export const makePug = () => {
         return gulp.src('./src/pug/*.pug')
             .pipe(plumber())
             .pipe(pug({
+                locals: {
+                    nav: JSON.parse(fs.readFileSync('./data/navigation.json', 'utf8')),
+                    content: JSON.parse(fs.readFileSync('./data/content.json', 'utf8')),
+                },
                 pretty: true,
                 plugins: [pugbem]
             }))
@@ -208,8 +213,11 @@ export const dev = gulp.series(
     gulp.parallel(
         img,
         fonts,
+        svgSpriter,
         inc,
-        makePug
+        makePug,
+        stylesDev,
+        stylesLib,
     )
 )
 
