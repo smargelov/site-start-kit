@@ -3,7 +3,7 @@ import del from 'del';
 import browserSync from 'browser-sync';
 import imagemin from 'gulp-imagemin';
 import webp from 'gulp-webp';
-import cache from 'gulp-cache';
+import newer from 'gulp-newer';
 import imgCompress from 'imagemin-jpeg-recompress';
 import jsonServer from "gulp-json-srv";
 import plumber from 'gulp-plumber';
@@ -25,16 +25,26 @@ export const fonts = () => {
 
 // Images tasks =====================================================
 const imgPATH = {
-    "input": ["./src/static/images/**/*.{png,jpg,gif,svg}",
+    "input": ["./src/static/images/**/*.{jpg,png,jpeg,svg,webp,gif,ico}",
         '!./src/static/images/svg/*'
     ],
-    "proxy": "./src/static/proxy-images/",
+    "proxy": "./src/static/images-proxy/",
     "output": "./build/images/"
 };
 
+const makeWebp = () => {
+    return gulp.src(imgPATH.input)
+        .pipe(newer(imgPATH.proxy))
+        .pipe(webp({
+            quality: 75
+        }))
+        .pipe(gulp.dest(imgPATH.proxy));
+}
+
 const imgOptimization = () => {
     return gulp.src(imgPATH.input)
-        .pipe(cache(imagemin([
+        .pipe(newer(imgPATH.proxy))
+        .pipe(imagemin([
             imgCompress({
                 loops: 4,
                 min: 70,
@@ -43,23 +53,19 @@ const imgOptimization = () => {
             }),
             imagemin.gifsicle(),
             imagemin.optipng(),
-            imagemin.svgo()
-        ])))
+            imagemin.svgo(),
+        ]))
         .pipe(gulp.dest(imgPATH.proxy));
 };
-const makeWebp = () => {
-    return gulp.src(imgPATH.proxy + '**/*.{png,jpg}')
-        .pipe(cache(webp()))
-        .pipe(gulp.dest(imgPATH.proxy + 'webp/'))
-}
+
 const imgMove = () => {
-    return gulp.src(imgPATH.proxy + '**/*')
+    return gulp.src(imgPATH.proxy + '**/*.{jpg,png,jpeg,svg,webp,gif,ico}')
         .pipe(gulp.dest(imgPATH.output))
-};
+}
 
 export const img = gulp.series(
-    imgOptimization,
     makeWebp,
+    imgOptimization,
     imgMove
 );
 
