@@ -1,6 +1,6 @@
 {
   "name": "start-kit",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Start kit with pug, sass and gulp by smargelov",
   "main": "index.js",
   "type": "module",
