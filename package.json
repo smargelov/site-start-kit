@@ -5,7 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "gulp"
+    "start": "gulp",
+    "build": "gulp build",
+    "build-min": "gulp buildMin"
   },
   "author": "Sergey Margelov",
   "license": "ISC",

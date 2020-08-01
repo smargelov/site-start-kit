@@ -4,3 +4,7 @@ import del from 'del';
 export const cleanBuild = () => {
     return del('./build/**/*');
 };
+
+export const cleanProxy = () => {
+    return del('./src/images/proxy/**/*');
+};

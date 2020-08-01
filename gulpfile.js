@@ -45,6 +45,40 @@ export const dev = gulp.series(
     ),
 );
 
+// Build task =====================================================
+export const build = gulp.series(
+    clean.cleanProxy,
+    clean.cleanBuild,
+    gulp.parallel(
+        img,
+        fonts,
+        makeSvgSprite,
+        inc,
+        makePug,
+        style.stylesBuild,
+        style.stylesLib,
+        js.libsJsBuild,
+        js.jsBuild,
+    ),
+);
+
+// Build min task =====================================================
+export const buildMin = gulp.series(
+    clean.cleanProxy,
+    clean.cleanBuild,
+    gulp.parallel(
+        img,
+        fonts,
+        makeSvgSprite,
+        inc,
+        makePug,
+        style.stylesBuildMin,
+        style.stylesLib,
+        js.libsJsBuild,
+        js.jsBuildMin,
+    ),
+);
+
 // Default task =====================================================
 export default gulp.series(
     dev,
