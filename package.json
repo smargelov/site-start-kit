@@ -7,7 +7,8 @@
   "scripts": {
     "start": "gulp",
     "build": "gulp build",
-    "build-min": "gulp buildMin"
+    "build-min": "gulp buildMin",
+    "grid": "node smart-grid.js"
   },
   "author": "Sergey Margelov",
   "license": "ISC",
