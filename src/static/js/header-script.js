@@ -22,12 +22,14 @@ window.addEventListener('resize', () => {
 });
 
 // Добавление css-custom-scroll-size для борьбы с проблемами скроллируемых блоков
-const outer = document.createElement('div');
-const inner = document.createElement('div');
-outer.style.overflow = 'scroll';
-outer.classList.add('scrollbar');
-document.body.appendChild(outer);
-outer.appendChild(inner);
-const scrollbarSize = outer.offsetWidth - inner.offsetWidth;
-document.body.removeChild(outer);
-document.documentElement.style.setProperty('--css-custom-scroll-size', `${scrollbarSize}px`);
+document.addEventListener('DOMContentLoaded', function () {
+    const outer = document.createElement('div');
+    const inner = document.createElement('div');
+    outer.style.overflow = 'scroll';
+    outer.classList.add('scrollbar');
+    document.body.appendChild(outer);
+    outer.appendChild(inner);
+    const scrollbarSize = outer.offsetWidth - inner.offsetWidth;
+    document.body.removeChild(outer);
+    document.documentElement.style.setProperty('--css-custom-scroll-size', `${scrollbarSize}px`);
+});
