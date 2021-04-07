@@ -2,7 +2,7 @@ include ../utils/mixins
 block variables
 
 doctype html
-html(lang="ru-RU" class="no-js")
+html(lang="ru-RU" class="no-js page")
     head
         meta(charset="utf-8")
         title #{title}
@@ -20,14 +20,15 @@ html(lang="ru-RU" class="no-js")
         <!--[if lt IE 9]>
         script(src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js")
         <![endif]-->
-        script(src='js/header-script.js')
+        script
+            include ../../static/js/header-script.js
     body
         .wrapper
             include ../modules/header/header
             .content
                 block content
             include ../modules/footer/footer
-        //script(src="js/jquery-3.3.1.min.js")
+        //- script(src="js/jquery-3.3.1.min.js")
         script(src="js/libs.min.js")
         script(src="js/main.js")
         block script
